@@ -1,0 +1,25 @@
+[gd_scene load_steps=2 format=3 uid="uid://b4rjcn0bcncdr"]
+
+[ext_resource type="Script" path="res://demo/events/events.gd" id="1"]
+
+[node name="Events" type="VBoxContainer"]
+offset_right = 51.0
+offset_bottom = 30.0
+script = ExtResource("1")
+
+[node name="Header" type="Label" parent="."]
+layout_mode = 2
+text = "Events"
+horizontal_alignment = 1
+
+[node name="Contents" type="ScrollContainer" parent="."]
+layout_mode = 2
+size_flags_vertical = 3
+
+[node name="List" type="VBoxContainer" parent="Contents"]
+unique_name_in_owner = true
+layout_mode = 2
+size_flags_horizontal = 3
+size_flags_vertical = 3
+
+[connection signal="child_entered_tree" from="Contents/List" to="." method="_on_list_child_entered_tree"]

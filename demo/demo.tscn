@@ -1,0 +1,72 @@
+[gd_scene load_steps=11 format=3 uid="uid://dg8wfohp6jdul"]
+
+[ext_resource type="PackedScene" uid="uid://b8gtr3wmit5g" path="res://addons/twitch_irc_client/twitch_irc_client.tscn" id="2_t861n"]
+[ext_resource type="PackedScene" uid="uid://cemx8uhkcb70t" path="res://demo/users/users.tscn" id="3"]
+[ext_resource type="Script" path="res://demo/commands/commands.gd" id="4"]
+[ext_resource type="PackedScene" uid="uid://b4rjcn0bcncdr" path="res://demo/events/events.tscn" id="5"]
+[ext_resource type="Script" path="res://demo/demo.gd" id="6"]
+[ext_resource type="Script" path="res://demo/commands/test.gd" id="7"]
+[ext_resource type="Script" path="res://demo/commands/roll.gd" id="7_p1d3b"]
+[ext_resource type="Script" path="res://demo/commands/lurk.gd" id="8"]
+[ext_resource type="Script" path="res://demo/commands/list.gd" id="11"]
+[ext_resource type="Script" path="res://demo/config.gd" id="12"]
+
+[node name="Demo" type="PanelContainer"]
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+script = ExtResource("6")
+
+[node name="TwitchIRCClient" parent="." instance=ExtResource("2_t861n")]
+rate_limit = 100
+
+[node name="Config" type="Node" parent="."]
+script = ExtResource("12")
+
+[node name="Commands" type="Node" parent="."]
+editor_description = "The chat bot command handler. Children nodes are commands, extending the \"commands/command.gd\" script."
+script = ExtResource("4")
+
+[node name="!list" type="Node" parent="Commands"]
+script = ExtResource("11")
+
+[node name="!lurk" type="Node" parent="Commands"]
+script = ExtResource("8")
+
+[node name="!roll" type="Node" parent="Commands"]
+script = ExtResource("7_p1d3b")
+aliases = ["!dice", "!roll_die", "!roll_dice"]
+is_reply = true
+
+[node name="Cooldown" type="Timer" parent="Commands/!roll"]
+one_shot = true
+
+[node name="!test" type="Node" parent="Commands"]
+script = ExtResource("7")
+aliases = ["!helloworld"]
+user_level = 8
+
+[node name="Contents" type="HBoxContainer" parent="."]
+layout_mode = 2
+
+[node name="Events" parent="Contents" instance=ExtResource("5")]
+unique_name_in_owner = true
+layout_mode = 2
+size_flags_horizontal = 3
+size_flags_stretch_ratio = 0.75
+
+[node name="Users" parent="Contents" instance=ExtResource("3")]
+unique_name_in_owner = true
+layout_mode = 2
+size_flags_horizontal = 3
+size_flags_stretch_ratio = 0.25
+
+[connection signal="authentication_failed" from="TwitchIRCClient" to="." method="_on_twitch_irc_client_authentication_failed"]
+[connection signal="authentication_succeeded" from="TwitchIRCClient" to="." method="_on_twitch_irc_client_authentication_succeeded"]
+[connection signal="connection_opened" from="TwitchIRCClient" to="." method="_on_twitch_irc_client_connection_opened"]
+[connection signal="message_received" from="TwitchIRCClient" to="." method="_on_twitch_irc_client_message_received"]
+[connection signal="user_joined" from="TwitchIRCClient" to="." method="_on_twitch_irc_client_user_joined"]
+[connection signal="user_parted" from="TwitchIRCClient" to="." method="_on_twitch_irc_client_user_parted"]
+[connection signal="username_list_received" from="TwitchIRCClient" to="." method="_on_twitch_irc_client_username_list_received"]

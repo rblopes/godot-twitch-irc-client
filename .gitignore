@@ -1,0 +1,6 @@
+# Godot 4+ specific ignores
+.godot/
+
+# System/tool-specific ignores
+.directory
+*~

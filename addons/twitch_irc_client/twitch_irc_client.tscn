@@ -1,0 +1,45 @@
+[gd_scene load_steps=6 format=3 uid="uid://b8gtr3wmit5g"]
+
+[ext_resource type="Script" path="res://addons/twitch_irc_client/twitch_irc_client.gd" id="1_a1teo"]
+[ext_resource type="Script" path="res://addons/twitch_irc_client/web_socket_client.gd" id="2_fkcdx"]
+[ext_resource type="Script" path="res://addons/twitch_irc_client/message_handler.gd" id="3_3tloh"]
+[ext_resource type="Script" path="res://addons/twitch_irc_client/message_queue.gd" id="4_epf36"]
+[ext_resource type="Script" path="res://addons/twitch_irc_client/message_formatter.gd" id="5_yrb88"]
+
+[node name="TwitchIRCClient" type="Node"]
+script = ExtResource("1_a1teo")
+
+[node name="WebSocket" type="Node" parent="."]
+script = ExtResource("2_fkcdx")
+
+[node name="MessageFormatter" type="Node" parent="."]
+script = ExtResource("5_yrb88")
+
+[node name="MessageHandler" type="Node" parent="."]
+script = ExtResource("3_3tloh")
+
+[node name="MessageQueue" type="Node" parent="."]
+script = ExtResource("4_epf36")
+
+[node name="Dispatch" type="Timer" parent="MessageQueue"]
+editor_description = "Controls the cadence of messages sent by the client."
+wait_time = 0.32
+
+[node name="Ping" type="Timer" parent="."]
+editor_description = "Schedules a PING message that must be sent regularly. Required to prevent connectivity loss."
+wait_time = 60.0
+
+[node name="RateLimit" type="Timer" parent="."]
+editor_description = "A period of 30 seconds where messages can be sent by the client without exceeding the rate limit."
+wait_time = 30.0
+one_shot = true
+autostart = true
+
+[connection signal="connected_to_server" from="WebSocket" to="." method="_on_web_socket_connected_to_server"]
+[connection signal="connection_closed" from="WebSocket" to="." method="_on_web_socket_connection_closed"]
+[connection signal="message_received" from="WebSocket" to="MessageHandler" method="_on_web_socket_message_received"]
+[connection signal="message_parsed" from="MessageHandler" to="." method="_on_message_handler_message_parsed"]
+[connection signal="dispatch_requested" from="MessageQueue" to="." method="_on_message_queue_dispatch_requested"]
+[connection signal="timeout" from="MessageQueue/Dispatch" to="MessageQueue" method="_on_dispatch_timeout"]
+[connection signal="timeout" from="Ping" to="." method="_on_ping_timeout"]
+[connection signal="timeout" from="RateLimit" to="." method="_on_rate_limit_timeout"]
