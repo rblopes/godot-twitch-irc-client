@@ -36,6 +36,9 @@ signal connection_refused()
 ## The client has received a message from the channel.
 signal message_received(username: String, message: String, tags: Dictionary)
 
+## The server replied with a notice.
+signal notice_received(message: String, tags: Dictionary)
+
 ## The server replied a ping from the client.
 signal ping()
 
@@ -107,6 +110,8 @@ func _on_message_handler_message_parsed(command: String, params: String, trailin
 		"NOTICE":
 			if trailing == TWITCH_NOTICE_AUTH_FAILED:
 				authentication_failed.emit()
+			else:
+				notice_received.emit(trailing, tags)
 		"PART":
 			user_parted.emit(username)
 		"PING":
