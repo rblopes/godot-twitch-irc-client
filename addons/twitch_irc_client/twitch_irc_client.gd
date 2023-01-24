@@ -21,7 +21,7 @@ signal authentication_succeeded()
 
 ## The client is being notified about a channel event (e.g.: follows, raids,
 ## subscriptions etc.)
-signal channel_event_received(tags: Dictionary)
+signal channel_event_received(message: String, tags: Dictionary)
 
 ## The connection has been closed. Not emitted when the server requests to
 ## reconnect.
@@ -119,7 +119,7 @@ func _on_message_handler_message_parsed(command: String, params: String, trailin
 		"RECONNECT":
 			reconnect_requested.emit()
 		"USERNOTICE":
-			channel_event_received.emit(tags)
+			channel_event_received.emit(trailing, tags)
 
 
 func _on_message_queue_dispatch_requested(message: String) -> void:
