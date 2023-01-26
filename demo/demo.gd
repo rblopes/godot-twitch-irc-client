@@ -32,14 +32,14 @@ func _on_twitch_irc_client_connection_opened() -> void:
 
 
 func _on_twitch_irc_client_message_received(username: String, message: String, tags: Dictionary) -> void:
-	var arguments := Array(message.split(" ", false))
+	var arguments: Array[String] = Array(message.split(" ", false))
 	var command_name := arguments.pop_front()
 	var user_details := UserDetails.new(username, tags)
 	var response: Dictionary = $Commands.run(command_name, arguments, user_details)
 	if response.is_empty() or response.message.is_empty():
 		return
 	$TwitchIRCClient.send(response.message, response.get("tags", {}))
-	%Events.add_event("Command %s requested by %s." % [command_name, user_details.username])
+	%Events.add_event("Command %s requested by %s." % [command_name, username])
 
 
 func _on_twitch_irc_client_user_joined(username: String) -> void:

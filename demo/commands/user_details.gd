@@ -41,8 +41,7 @@ func get_reply_parent_message_id() -> Dictionary:
 func get_user_level() -> int:
 	var result := 0
 	result |= UserLevelFlags.SUBSCRIBER * int(tags.get("subscriber") == "1")
+	result |= UserLevelFlags.VIP * int("vip" in tags)
 	result |= UserLevelFlags.MODERATOR * int(tags.get("mod") == "1")
-	for badge in tags.get("badges", "").split(",", false):
-		result |= UserLevelFlags.VIP * int(badge.begins_with("vip"))
-		result |= UserLevelFlags.BROADCASTER * int(badge.begins_with("broadcaster"))
+	result |= UserLevelFlags.BROADCASTER * int("broadcaster" in tags.get("badges", ""))
 	return result
