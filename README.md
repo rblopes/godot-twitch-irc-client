@@ -30,11 +30,11 @@ func _ready() -> void:
   $TwitchIRCClient.open_connection()
 
 func _on_connection_opened() -> void:
-  # NOTE: Replace <nick> and <OAuth Token> with actual values.
+  # Replace <nick> and <OAuth Token> with actual values.
   $TwitchIRCClient.authenticate("<nick>", "<OAuth Token>")
 
 func _on_authentication_succeeded() -> void:
-  # NOTE: Replace <twitch channel> with an actual value.
+  # Replace <twitch channel> with an actual value.
   $TwitchIRCClient.join("#<twitch channel>")
 
 func _on_message_received(username, message, tags) -> void:
