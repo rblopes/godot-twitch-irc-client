@@ -1,10 +1,11 @@
-[gd_scene load_steps=6 format=3 uid="uid://b8gtr3wmit5g"]
+[gd_scene load_steps=7 format=3 uid="uid://b8gtr3wmit5g"]
 
 [ext_resource type="Script" path="res://addons/twitch_irc_client/twitch_irc_client.gd" id="1_a1teo"]
 [ext_resource type="Script" path="res://addons/twitch_irc_client/web_socket_client.gd" id="2_fkcdx"]
 [ext_resource type="Script" path="res://addons/twitch_irc_client/message_handler.gd" id="3_3tloh"]
 [ext_resource type="Script" path="res://addons/twitch_irc_client/message_queue.gd" id="4_epf36"]
 [ext_resource type="Script" path="res://addons/twitch_irc_client/message_formatter.gd" id="5_yrb88"]
+[ext_resource type="Script" path="res://addons/twitch_irc_client/rate_limit.gd" id="6_0y33c"]
 
 [node name="TwitchIRCClient" type="Node"]
 script = ExtResource("1_a1teo")
@@ -34,6 +35,7 @@ editor_description = "A period of 30 seconds where messages can be sent by the c
 wait_time = 30.0
 one_shot = true
 autostart = true
+script = ExtResource("6_0y33c")
 
 [connection signal="connected_to_server" from="WebSocket" to="." method="_on_web_socket_connected_to_server"]
 [connection signal="connection_closed" from="WebSocket" to="." method="_on_web_socket_connection_closed"]
@@ -42,4 +44,4 @@ autostart = true
 [connection signal="dispatch_requested" from="MessageQueue" to="." method="_on_message_queue_dispatch_requested"]
 [connection signal="timeout" from="MessageQueue/Dispatch" to="MessageQueue" method="_on_dispatch_timeout"]
 [connection signal="timeout" from="Ping" to="." method="_on_ping_timeout"]
-[connection signal="timeout" from="RateLimit" to="." method="_on_rate_limit_timeout"]
+[connection signal="timeout" from="RateLimit" to="RateLimit" method="_on_timeout"]

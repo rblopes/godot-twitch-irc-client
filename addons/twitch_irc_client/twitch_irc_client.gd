@@ -86,15 +86,13 @@ var enable_log: bool = true
 ## If the client is currently allowed to send more chat messages or not.
 var is_within_rate_limit: bool:
 	get:
-		return _messages_sent_count < rate_limit
+		return $RateLimit.is_within_limit(rate_limit)
 
 ## How many messages can be sent by the client within a period of 30 seconds.
 @export
 var rate_limit: RateLimits = RateLimits.FOR_REGULAR_ACCOUNTS:
 	set(value):
 		rate_limit = value if value in RateLimits.values() else RateLimits.FOR_REGULAR_ACCOUNTS
-
-var _messages_sent_count: int = 0
 
 
 func _on_message_handler_message_parsed(command: String, params: String, trailing: String, username: String, tags: Dictionary) -> void:
@@ -131,10 +129,6 @@ func _on_message_queue_dispatch_requested(message: String) -> void:
 
 func _on_ping_timeout() -> void:
 	$MessageQueue.add($MessageFormatter.get_ping_twitch_message())
-
-
-func _on_rate_limit_timeout() -> void:
-	_messages_sent_count = 0
 
 
 func _on_web_socket_connected_to_server() -> void:
@@ -189,13 +183,11 @@ func open_connection() -> void:
 
 ## Sends [code]message[/code] in the chat with its respective [code]tags[/code],
 ## if any, respecting the [member rate_limit]. Whenever that limit is exceeded,
-## [signal rate_limit_exceeded] is emitted and new messages are ignored.
+## [signal rate_limit_exceeded] is emitted and further messages are ignored.
 func send(message: String, tags: Dictionary = {}) -> void:
 	assert(len(channel) > 1 and channel.begins_with("#") and not "," in channel, "Invalid channel.")
-	if $RateLimit.is_stopped():
-		$RateLimit.start()
-	if is_within_rate_limit:
+	if $RateLimit.is_within_limit(rate_limit):
+		$RateLimit.count()
 		$MessageQueue.add($MessageFormatter.get_privmsg_message(channel, message, tags))
-		_messages_sent_count += 1
 	else:
 		rate_limit_exceeded.emit(message, tags)
