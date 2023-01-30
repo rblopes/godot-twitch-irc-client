@@ -85,7 +85,6 @@ var channel: String = ""
 var enable_log: bool = true
 
 ## If the client is currently allowed to send more chat messages or not.
-@export
 var is_within_rate_limit: bool:
 	get:
 		return _messages_sent_count < rate_limit
