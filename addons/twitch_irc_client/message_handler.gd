@@ -25,14 +25,14 @@ func _get_tags(raw_tags: String) -> Dictionary:
 	return result
 
 
+func _on_web_socket_message_received(message: Variant) -> void:
+	if message is String:
+		_parse_messages(message)
+
+
 func _parse_messages(messages: String) -> void:
 	for message in messages.split(CRLF, false):
 		var parts := _get_message_parts(message)
 		message_parsed.emit(parts.command, parts.params, parts.trailing, parts.username, _get_tags(parts.tags))
 		if owner.enable_log and OS.is_debug_build():
 			prints(">", message)
-
-
-func _on_web_socket_message_received(message: Variant) -> void:
-	if message is String:
-		_parse_messages(message)

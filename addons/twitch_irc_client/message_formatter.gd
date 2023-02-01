@@ -52,4 +52,4 @@ func get_pong_message(arg: String) -> String:
 
 
 func get_privmsg_message(channel: String, message: String, tags: Dictionary) -> String:
-		return str(_format_tags(tags), IRC_COMMAND_PRIVMSG_MASK % [channel, message])
+	return str(_format_tags(tags), IRC_COMMAND_PRIVMSG_MASK % [channel, message])

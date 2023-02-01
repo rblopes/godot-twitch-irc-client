@@ -13,9 +13,6 @@ var supported_protocols: PackedStringArray
 @export
 var tls_trusted_certificate: X509Certificate
 
-@export
-var verify_tls: bool = true
-
 var _last_state := WebSocketPeer.STATE_CLOSED
 var _socket := WebSocketPeer.new()
 
@@ -47,7 +44,7 @@ func close(code: int = 1000, reason: String = "") -> void:
 func connect_to_url(url: String) -> int:
 	_socket.handshake_headers = handshake_headers
 	_socket.supported_protocols = supported_protocols
-	var error = _socket.connect_to_url(url, verify_tls, tls_trusted_certificate)
+	var error := _socket.connect_to_url(url, TLSOptions.client(tls_trusted_certificate))
 	if error == OK:
 		_last_state = _socket.get_ready_state()
 	return error
