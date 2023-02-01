@@ -37,7 +37,7 @@ script = ExtResource("8")
 
 [node name="!roll" type="Node" parent="Commands"]
 script = ExtResource("7_p1d3b")
-aliases = ["!dice", "!roll_die", "!roll_dice"]
+aliases = Array[String](["!dice", "!roll_die", "!roll_dice"])
 is_reply = true
 
 [node name="Cooldown" type="Timer" parent="Commands/!roll"]
@@ -45,7 +45,7 @@ one_shot = true
 
 [node name="!test" type="Node" parent="Commands"]
 script = ExtResource("7")
-aliases = ["!helloworld"]
+aliases = Array[String](["!helloworld"])
 user_level = 8
 
 [node name="Contents" type="HBoxContainer" parent="."]

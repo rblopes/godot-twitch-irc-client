@@ -6,13 +6,13 @@ extends "command.gd"
 const ROLL_MESSAGE := "The dice has rolled the number %d."
 const COOLDOWN_MESSAGE := "This command is on cooldown for about %d seconds..."
 
-const HELP_MESSAGE := str(
+const HELP_MESSAGE := [
 	"Command !roll_die [{ --help | -h | -? } | <number>] • ",
 	"Aliases: %s • ",
 	"Options: • ",
 	"--help: Shows this help message • ",
 	"<number>: An integer, ranging from %d (default) to %d"
-)
+]
 
 const MIN_FACES := 6
 const MAX_FACES := 1000
@@ -40,7 +40,7 @@ func _roll(faces: int) -> int:
 func run(arguments: Array[String], user_details: UserDetails) -> String:
 	match arguments.pop_front():
 		"--help", "-h", "-?":
-			return HELP_MESSAGE % ["; ".join(aliases), min_faces, max_faces]
+			return " ".join(HELP_MESSAGE) % ["; ".join(aliases), min_faces, max_faces]
 		var value:
 			if $Cooldown.is_stopped():
 				$Cooldown.start(cooldown_interval)
