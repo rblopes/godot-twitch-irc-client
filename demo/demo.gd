@@ -32,8 +32,8 @@ func _on_twitch_irc_client_connection_opened() -> void:
 
 
 func _on_twitch_irc_client_message_received(username: String, message: String, tags: Dictionary) -> void:
-	var arguments: Array[String] = Array(message.split(" ", false))
-	var command_name := arguments.pop_front()
+	var arguments: Array[String] = []; arguments.assign(message.split(" ", false))
+	var command_name: String = arguments.pop_front()
 	var user_details := UserDetails.new(username, tags)
 	var response: Dictionary = $Commands.run(command_name, arguments, user_details)
 	if response.is_empty() or response.message.is_empty():
