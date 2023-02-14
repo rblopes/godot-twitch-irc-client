@@ -5,8 +5,7 @@
 ## Godot Engine to interact with Twitch channels.[br]
 ##
 ## Before using this add-on in your projects, you must register a Twitch app and
-## obtain an [url=https://twitchapps.com/tmi/]OAuth token[/url] to grant you
-## access to the Twitch IRC API.
+## obtain an OAuth token to get access to the Twitch IRC API.
 ##
 ## @tutorial(Register your App | Twitch Developers): https://dev.twitch.tv/docs/authentication/register-app/
 ## @tutorial(Chat & Chatbots | Twitch Developers): https://dev.twitch.tv/docs/irc/

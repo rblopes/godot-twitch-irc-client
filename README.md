@@ -6,18 +6,18 @@ An abstraction layer for the Twitch IRC API, over a WebSocket connection, that
 makes it possible for games and applications created with Godot Engine to
 interact with Twitch channels.
 
-> Before using this add-on in your projects, you must [register a Twitch
-> app][twitch-app] and obtain an [OAuth token][tmi] to grant you access to the
-> Twitch IRC API.
->
-> [twitch-app]: https://dev.twitch.tv/docs/authentication/register-app
-> [tmi]: https://twitchapps.com/tmi/
-
 
 ## Example
 
 Below is a minimal reproducible working sample. A more elaborate project can be
 found in this repository, inside the `demo` folder.
+
+> Before testing, you must [register a Twitch app][^1] and obtain an [OAuth
+> token][^2] to grant you access to the Twitch IRC API. Please refer to the
+> Twitch Developers documentation to find out more.
+>
+> [^1]: https://dev.twitch.tv/docs/authentication/register-app/
+> [^2]: https://dev.twitch.tv/docs/irc/authenticate-bot/
 
 ```gdscript
 extends Node
