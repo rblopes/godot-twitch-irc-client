@@ -83,16 +83,16 @@ var channel: String = ""
 @export
 var enable_log: bool = true
 
-## If the client is currently allowed to send more chat messages or not.
-var is_within_rate_limit: bool:
-	get:
-		return $RateLimit.is_within_limit(rate_limit)
-
 ## How many messages can be sent by the client within a period of 30 seconds.
 @export
 var rate_limit: RateLimits = RateLimits.FOR_REGULAR_ACCOUNTS:
 	set(value):
 		rate_limit = value if value in RateLimits.values() else RateLimits.FOR_REGULAR_ACCOUNTS
+
+## If the client is currently allowed to send more chat messages or not.
+var is_within_rate_limit: bool:
+	get:
+		return $RateLimit.is_within_limit(rate_limit)
 
 
 func _on_message_handler_message_parsed(command: String, params: String, trailing: String, username: String, tags: Dictionary) -> void:

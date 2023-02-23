@@ -33,7 +33,7 @@ func get_display_name() -> String:
 ## replies.
 func get_reply_parent_message_id() -> Dictionary:
 	if "id" in tags:
-		return {"reply-parent-msg-id" = tags.id}
+		return {"reply-parent-msg-id": tags.id}
 	return {}
 
 
