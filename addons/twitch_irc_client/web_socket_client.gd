@@ -41,7 +41,7 @@ func close(code: int = 1000, reason: String = "") -> void:
 	_last_state = _socket.get_ready_state()
 
 
-func connect_to_url(url: String) -> int:
+func connect_to_url(url: String) -> Error:
 	_socket.handshake_headers = handshake_headers
 	_socket.supported_protocols = supported_protocols
 	var error := _socket.connect_to_url(url, TLSOptions.client(tls_trusted_certificate))
@@ -59,7 +59,7 @@ func get_message() -> Variant:
 	return null
 
 
-func send(message: Variant) -> int:
+func send(message: Variant) -> Error:
 	if message is String:
 		return _socket.send_text(message)
 	return _socket.send(var_to_bytes(message))
