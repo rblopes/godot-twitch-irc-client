@@ -52,6 +52,32 @@ See the API documentation for more details browsing the "Search Help" function
 of the editor.
 
 
+## Limitations
+
+The purpose of this add-on is to manage a single WebSocket connection to the
+Twitch's IRC API, providing only the functionality to handle the message flow,
+and their respective metadata, sent and received through a channel's chat.
+
+For that reason, some functionality found in other add-ons is deliberately
+missing.
+
+TwitchIRCClient will not:
+
+- Manage so called "chat commands": TwitchIRCClient has no opinion on how you
+  should create, use and make such interactions available. Therefore, developers
+  have complete freedom to design their own interactions however they want. (See
+  the demo project for one example.)
+
+- Attempt to connect to other APIs (e.g.: PubSub, EventSub etc.) to consume
+  other types of events not possible to obtain using the IRC API.
+
+- Obtain, validate and refresh authentication tokens: without a question, the
+  subject for an entirely separate add-on.
+
+Additionally, managing connections to multiple channels at once will not
+implemented in the library for the time being.
+
+
 ## License
 
 [MIT](LICENSE.md).
