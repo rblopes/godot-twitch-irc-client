@@ -1,21 +1,16 @@
 extends VBoxContainer
 
-var _list := {}
-
-
-func _create_label(text: String) -> Label:
-	var result := Label.new()
-	result.text = text
-	return result
-
 
 func add_user(username: String) -> void:
-	if not username in _list:
-		_list[username] = %List.add_item(username)
-		%List.sort_items_by_text()
+	$List.add_item(username)
+	$List.sort_items_by_text()
 
 
 func remove_user(username: String) -> void:
-	if username in _list:
-		%List.remove_item(_list[username])
-		_list.erase(username)
+	var index := -1
+	for i in $List.item_count:
+		if $List.get_item_text(i) == username:
+			index = i
+			break
+	if index >= 0:
+		$List.remove_item(index)

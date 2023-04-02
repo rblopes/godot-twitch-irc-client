@@ -13,6 +13,5 @@ text = "Users"
 horizontal_alignment = 1
 
 [node name="List" type="ItemList" parent="."]
-unique_name_in_owner = true
 layout_mode = 2
 size_flags_vertical = 3
