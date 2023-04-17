@@ -1,5 +1,9 @@
 # CHANGELOG
 
+## HEAD
+
+- Add `TwitchIRCClient#is_connection_open` method
+
 ## 2023-02-01 - v0.1.1
 
 - Fix broken WebSocket code due Godot's API changes

@@ -157,6 +157,11 @@ func close_connection() -> void:
 	$WebSocket.close()
 
 
+## Returns true if the WebSocket connection is open.
+func is_connection_open() -> bool:
+	return $WebSocket.get_ready_state() == WebSocketPeer.STATE_OPEN
+
+
 ## Joins a given Twitch channel. The channel name must be preceeded by a pound
 ## sign, e.g. "[code]#gdq[/code]". If omitted, [code]p_channel[/code] defaults
 ## to [member channel].
@@ -174,6 +179,8 @@ func leave() -> void:
 
 ## Establishes a connection to the Twitch IRC API.
 func open_connection() -> void:
+	if $WebSocket.get_ready_state() != WebSocketPeer.STATE_CLOSED:
+		return
 	$MessageQueue.clear()
 	$WebSocket.clear()
 	if $WebSocket.connect_to_url(TWITCH_WS_API_URL) != OK:

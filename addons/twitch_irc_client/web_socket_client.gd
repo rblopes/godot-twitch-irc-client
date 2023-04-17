@@ -59,6 +59,10 @@ func get_message() -> Variant:
 	return null
 
 
+func get_ready_state() -> WebSocketPeer.State:
+	return _socket.get_ready_state() if is_instance_valid(_socket) else WebSocketPeer.STATE_CLOSED
+
+
 func send(message: Variant) -> Error:
 	if message is String:
 		return _socket.send_text(message)
