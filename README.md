@@ -13,8 +13,9 @@ Below is a minimal reproducible working sample. A more elaborate project can be
 found in this repository, inside the `demo` folder.
 
 > Before testing, you must [register a Twitch app][1] and obtain an [OAuth
-> token][2] to grant you access to the Twitch IRC API. Please refer to the
-> Twitch Developers documentation to find out more.
+> token][2] with at least the `chat:read` and `chat:edit` scopes to grant you
+> access to the Twitch IRC API and use it properly. Please refer to the Twitch
+> Developers documentation to find out more.
 >
 > [1]: https://dev.twitch.tv/docs/authentication/register-app/
 > [2]: https://dev.twitch.tv/docs/irc/authenticate-bot/
@@ -30,11 +31,13 @@ func _ready() -> void:
   $TwitchIRCClient.open_connection()
 
 func _on_connection_opened() -> void:
-  # Replace <nick> and <OAuth Token> with actual values.
+  # Replace <nick> and <OAuth Token> with the account name using the plugin and
+  # its generated token.
   $TwitchIRCClient.authenticate("<nick>", "<OAuth Token>")
 
 func _on_authentication_succeeded() -> void:
-  # Replace <twitch channel> with an actual value.
+  # Replace <twitch channel> with the channel name whose chat box you want to
+  # read. It must be prefixed by a `#` sign.
   $TwitchIRCClient.join("#<twitch channel>")
 
 func _on_message_received(username, message, tags) -> void:
@@ -48,34 +51,30 @@ func _on_message_received(username, message, tags) -> void:
       $TwitchIRCClient.send(str("List: ", ", ".join(arguments)))
 ```
 
-See the API documentation for more details browsing the "Search Help" function
-of the editor.
+See the API documentation, browsing the "Search Help" function of the editor,
+for more details.
 
 
 ## Limitations
 
 The purpose of this add-on is to manage a single WebSocket connection to the
-Twitch's IRC API, providing only the functionality to handle the message flow,
+Twitch's IRC API, providing only the functionality to handle its message flow,
 and their respective metadata, sent and received through a channel's chat.
 
-For that reason, some functionality found in other add-ons is deliberately
-missing.
+For this reason, some features found in other add-ons are deliberately missing:
 
-TwitchIRCClient will not:
+- **Chat "commands"**: TwitchIRCClient has no opinion on how you should create
+  and provide such interactions. Therefore, developers have complete freedom to
+  design their own use cases however they want.
 
-- Manage so called "chat commands": TwitchIRCClient has no opinion on how you
-  should create, use and make such interactions available. Therefore, developers
-  have complete freedom to design their own interactions however they want. (See
-  the demo project for one example.)
+- **Connect and manage other APIs**: connecting to other APIs (e.g. PubSub,
+  EventSub etc.) is not supported by this plugin.
 
-- Attempt to connect to other APIs (e.g.: PubSub, EventSub etc.) to consume
-  other types of events not possible to obtain using the IRC API.
+- **Manage OAuth access tokens**: TwitchIRCClient should be paired with another
+  add-on to obtain, validate and refresh access tokens.
 
-- Obtain, validate and refresh authentication tokens: without a question, the
-  subject for an entirely separate add-on.
-
-Additionally, managing connections to multiple channels at once will not
-implemented in the library for the time being.
+Additionally, the ability to manage multiple channel connections at once will
+not be implemented in the library for the time being.
 
 
 ## License
