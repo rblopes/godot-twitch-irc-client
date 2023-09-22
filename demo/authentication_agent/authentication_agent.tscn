@@ -1,0 +1,23 @@
+[gd_scene load_steps=3 format=3 uid="uid://dtu1pcwuuskwl"]
+
+[ext_resource type="Script" path="res://demo/authentication_agent/authentication_agent.gd" id="1_yn4kk"]
+[ext_resource type="Script" path="res://demo/authentication_agent/oauth_request.gd" id="2_iedmd"]
+
+[node name="AuthenticationAgent" type="Node"]
+script = ExtResource("1_yn4kk")
+
+[node name="OAuthRequest" type="Node" parent="."]
+script = ExtResource("2_iedmd")
+
+[node name="AccessTokenRequest" type="HTTPRequest" parent="OAuthRequest"]
+
+[node name="ValidationRequest" type="HTTPRequest" parent="OAuthRequest"]
+
+[node name="Refresh" type="Timer" parent="."]
+editor_description = "Schedules a token validation."
+wait_time = 3600.0
+
+[connection signal="access_token_failed" from="OAuthRequest" to="." method="_on_oauth_request_access_token_failed"]
+[connection signal="access_token_received" from="OAuthRequest" to="." method="_on_oauth_request_access_token_received"]
+[connection signal="request_completed" from="OAuthRequest/AccessTokenRequest" to="OAuthRequest" method="_on_access_token_request_completed"]
+[connection signal="timeout" from="Refresh" to="." method="_on_refresh_timeout"]

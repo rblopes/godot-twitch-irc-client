@@ -1,13 +1,15 @@
-[gd_scene load_steps=11 format=3 uid="uid://dg8wfohp6jdul"]
+[gd_scene load_steps=13 format=3 uid="uid://bpb4q5icbfrli"]
 
 [ext_resource type="PackedScene" uid="uid://b8gtr3wmit5g" path="res://addons/twitch_irc_client/twitch_irc_client.tscn" id="2_t861n"]
 [ext_resource type="PackedScene" uid="uid://cemx8uhkcb70t" path="res://demo/users/users.tscn" id="3"]
+[ext_resource type="Script" path="res://demo/http_server/http_server.gd" id="3_ve6qg"]
 [ext_resource type="Script" path="res://demo/commands/commands.gd" id="4"]
 [ext_resource type="PackedScene" uid="uid://b4rjcn0bcncdr" path="res://demo/events/events.tscn" id="5"]
 [ext_resource type="Script" path="res://demo/demo.gd" id="6"]
 [ext_resource type="Script" path="res://demo/commands/test.gd" id="7"]
 [ext_resource type="Script" path="res://demo/commands/roll.gd" id="7_p1d3b"]
 [ext_resource type="Script" path="res://demo/commands/lurk.gd" id="8"]
+[ext_resource type="PackedScene" uid="uid://dtu1pcwuuskwl" path="res://demo/authentication_agent/authentication_agent.tscn" id="9_n10a1"]
 [ext_resource type="Script" path="res://demo/commands/list.gd" id="11"]
 [ext_resource type="Script" path="res://demo/config.gd" id="12"]
 
@@ -18,6 +20,14 @@ anchor_bottom = 1.0
 grow_horizontal = 2
 grow_vertical = 2
 script = ExtResource("6")
+
+[node name="AuthenticationAgent" parent="." instance=ExtResource("9_n10a1")]
+oauth_redirect_url = "https://localhost:3000/callback"
+should_auto_validate_access_token = true
+
+[node name="HTTPServer" type="Node" parent="."]
+editor_description = "An ad hoc HTTP server to handle the OAuth authorization code."
+script = ExtResource("3_ve6qg")
 
 [node name="TwitchIRCClient" parent="." instance=ExtResource("2_t861n")]
 rate_limit = 100
@@ -63,6 +73,9 @@ layout_mode = 2
 size_flags_horizontal = 3
 size_flags_stretch_ratio = 0.25
 
+[connection signal="access_token_failed" from="AuthenticationAgent" to="." method="_on_authentication_agent_access_token_failed"]
+[connection signal="access_token_missing" from="AuthenticationAgent" to="." method="_on_authentication_agent_access_token_missing"]
+[connection signal="access_token_ready" from="AuthenticationAgent" to="." method="_on_authentication_agent_access_token_ready"]
 [connection signal="authentication_failed" from="TwitchIRCClient" to="." method="_on_twitch_irc_client_authentication_failed"]
 [connection signal="authentication_succeeded" from="TwitchIRCClient" to="." method="_on_twitch_irc_client_authentication_succeeded"]
 [connection signal="connection_opened" from="TwitchIRCClient" to="." method="_on_twitch_irc_client_connection_opened"]
