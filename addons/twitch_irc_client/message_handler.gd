@@ -21,7 +21,7 @@ func _get_message_parts(value: String) -> Dictionary:
 func _get_tags(raw_tags: String) -> Dictionary:
 	var result := {}
 	for m in _irc_tags_regex.search_all(raw_tags):
-		result[m.get_string("key")] = m.get_string("value")
+		result[m.get_string("key")] = _unescape_tag_value(m.get_string("value"))
 	return result
 
 
@@ -34,3 +34,7 @@ func _parse_messages(messages: String) -> void:
 	for message in messages.split(CRLF, false):
 		var parts := _get_message_parts(message)
 		message_parsed.emit(parts.command, parts.params, parts.trailing, parts.username, _get_tags(parts.tags))
+
+
+func _unescape_tag_value(raw_value: String) -> String:
+	return raw_value.replace("\\:", ";").replace("\\s", " ").replace("\\r", "\r").replace("\\n", "\n").replace("\\\\", "\\")

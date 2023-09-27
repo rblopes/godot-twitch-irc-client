@@ -17,10 +17,14 @@ const TWITCH_IRC_CAPABILITIES := "twitch.tv/commands twitch.tv/membership twitch
 const TWITCH_PING_MESSAGE := "PING :tmi.twitch.tv"
 
 
+func _escape_tag_value(raw_value: String) -> String:
+	return raw_value.replace("\\", "\\\\").replace(";", "\\:").replace(" ", "\\s").replace("\r", "\\r").replace("\n", "\\n")
+
+
 func _format_tags(tags: Dictionary) -> String:
 	if tags.is_empty():
 		return ""
-	return str("@", ";".join(tags.keys().map(func(t): return str(t, "=", tags[t]))), " ")
+	return str("@", ";".join(tags.keys().map(func(t): return str(t, "=", _escape_tag_value(tags[t])))), " ")
 
 
 func get_cap_req_message() -> String:

@@ -7,6 +7,7 @@
 - Add `is_within_rate_limit()` method
 - Add `logger` signal
 - Add `TwitchIRCClient#is_connection_open` method
+- Fix a potential issue sending message tags
 
 ## 2023-02-01 - v0.1.1
 
