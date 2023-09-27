@@ -6,6 +6,10 @@ An abstraction layer for the Twitch IRC API, over a WebSocket connection, that
 makes it possible for games and applications created with Godot Engine to
 interact with Twitch channels.
 
+> NOTE: This a pure GDScript implementation. If you're developing Twitch
+> chat integrations with Godot Engine and C#, consider using
+> [TwitchLib](https://github.com/TwitchLib) instead.
+
 
 ## Example
 
@@ -13,9 +17,8 @@ Below is a minimal reproducible working sample. A more elaborate project can be
 found in this repository, inside the `demo` folder.
 
 > Before testing, you must [register a Twitch app][1] and obtain an [OAuth
-> token][2] with at least the `chat:read` and `chat:edit` scopes to grant you
-> access to the Twitch IRC API and use it properly. Please refer to the Twitch
-> Developers documentation to find out more.
+> token][2] with at least the `chat:read` and `chat:edit` scopes to access the
+> Twitch IRC API. Please read the Twitch Developers documentation to learn more.
 >
 > [1]: https://dev.twitch.tv/docs/authentication/register-app/
 > [2]: https://dev.twitch.tv/docs/irc/authenticate-bot/
