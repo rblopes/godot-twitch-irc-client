@@ -39,6 +39,7 @@ script = ExtResource("6_0y33c")
 
 [connection signal="connected_to_server" from="WebSocket" to="." method="_on_web_socket_connected_to_server"]
 [connection signal="connection_closed" from="WebSocket" to="." method="_on_web_socket_connection_closed"]
+[connection signal="message_received" from="WebSocket" to="." method="_on_web_socket_message_received"]
 [connection signal="message_received" from="WebSocket" to="MessageHandler" method="_on_web_socket_message_received"]
 [connection signal="message_parsed" from="MessageHandler" to="." method="_on_message_handler_message_parsed"]
 [connection signal="dispatch_requested" from="MessageQueue" to="." method="_on_message_queue_dispatch_requested"]

@@ -12,8 +12,8 @@ func _enter_tree() -> void:
 	get_window().set_min_size(Vector2i(width, height))
 
 
-func _on_twitch_irc_client_authentication_failed() -> void:
-	printerr("Authentication failed.")
+func _ready() -> void:
+	$TwitchIRCClient.open_connection()
 
 
 func _on_twitch_irc_client_authentication_succeeded() -> void:
@@ -29,6 +29,11 @@ func _on_twitch_irc_client_connection_opened() -> void:
 	var oauth_token = $Config.get_value("authentication", "oauth_token")
 	if nick is String and oauth_token is String:
 		$TwitchIRCClient.authenticate(nick, oauth_token)
+
+
+func _on_twitch_irc_client_logger(message: String, timestamp: String) -> void:
+	for s in message.strip_edges().split("\r\n"):
+		prints(timestamp, s)
 
 
 func _on_twitch_irc_client_message_received(username: String, message: String, tags: Dictionary) -> void:
@@ -55,7 +60,3 @@ func _on_twitch_irc_client_user_parted(username: String) -> void:
 func _on_twitch_irc_client_username_list_received(usernames: Array[String]) -> void:
 	for username in usernames:
 		%Users.add_user(username)
-
-
-func _ready() -> void:
-	$TwitchIRCClient.open_connection()

@@ -32,6 +32,9 @@ signal connection_opened()
 ## The connection to the server has failed.
 signal connection_refused()
 
+## Emitted for raw messages and events.
+signal logger(message: String, timestamp: String)
+
 ## The client has received a message from the channel.
 signal message_received(username: String, message: String, tags: Dictionary)
 
@@ -76,12 +79,8 @@ const TWITCH_WS_API_URL := "wss://irc-ws.chat.twitch.tv:443"
 
 ## The Twitch channel to connect to. It must be preceeded by a pound sign (#),
 ## e.g. [code]#gdq[/code].
-@export
+@export_placeholder("#mychannel")
 var channel: String = ""
-
-## Enable the output of incoming and outgoing raw messages to the debug console.
-@export
-var enable_log: bool = true
 
 ## How many messages can be sent by the client within a period of 30 seconds.
 @export
@@ -106,6 +105,7 @@ func _on_message_handler_message_parsed(command: String, params: String, trailin
 		"NOTICE":
 			if trailing == TWITCH_NOTICE_AUTH_FAILED:
 				authentication_failed.emit()
+				logger.emit("*** IRC API authentication failed. ***", Time.get_datetime_string_from_system())
 			else:
 				notice_received.emit(trailing, tags)
 		"PART":
@@ -125,6 +125,11 @@ func _on_message_handler_message_parsed(command: String, params: String, trailin
 
 func _on_message_queue_dispatch_requested(message: String) -> void:
 	$WebSocket.send(message)
+	# Filter OAuth token when logging.
+	if message.begins_with("PASS"):
+		logger.emit("PASS oauth:******************************", Time.get_datetime_string_from_system())
+	else:
+		logger.emit(message.strip_edges(), Time.get_datetime_string_from_system())
 
 
 func _on_ping_timeout() -> void:
@@ -132,20 +137,26 @@ func _on_ping_timeout() -> void:
 
 
 func _on_web_socket_connected_to_server() -> void:
-	print_debug("Connected to Twitch.")
 	$MessageQueue.start()
 	$Ping.start()
 	connection_opened.emit()
+	logger.emit("*** WebSocket connection established. ***", Time.get_datetime_string_from_system())
 
 
 func _on_web_socket_connection_closed() -> void:
-	print_debug("Connection closed.")
 	$MessageQueue.stop()
 	$Ping.stop()
 	connection_closed.emit()
+	logger.emit("*** WebSocket connection closed. ***", Time.get_datetime_string_from_system())
 
 
-## Login using a Twitch account and its OAuth access token.
+func _on_web_socket_message_received(message: String) -> void:
+	logger.emit(message, Time.get_datetime_string_from_system())
+
+
+## Login using a Twitch account and its OAuth access token. Use both
+## [signal authentication_failed] and [signal authentication_succeeded] signals
+## to confirm whether a login attempt succeeded or failed.
 func authenticate(nick: String, oauth_token: String) -> void:
 	$MessageQueue.add($MessageFormatter.get_cap_req_message())
 	$MessageQueue.add($MessageFormatter.get_pass_message(oauth_token))

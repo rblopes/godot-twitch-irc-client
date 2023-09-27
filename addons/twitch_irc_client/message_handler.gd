@@ -34,5 +34,3 @@ func _parse_messages(messages: String) -> void:
 	for message in messages.split(CRLF, false):
 		var parts := _get_message_parts(message)
 		message_parsed.emit(parts.command, parts.params, parts.trailing, parts.username, _get_tags(parts.tags))
-		if owner.enable_log and OS.is_debug_build():
-			prints(">", message)
