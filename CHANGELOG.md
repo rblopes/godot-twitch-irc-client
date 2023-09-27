@@ -3,6 +3,8 @@
 ## HEAD
 
 - BREAKING CHANGE: Remove `enable_log` property
+- BREAKING CHANGE: Remove `is_within_rate_limit` property
+- Add `is_within_rate_limit()` method
 - Add `logger` signal
 - Add `TwitchIRCClient#is_connection_open` method
 

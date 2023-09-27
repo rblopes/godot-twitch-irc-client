@@ -88,11 +88,6 @@ var rate_limit: RateLimits = RateLimits.FOR_REGULAR_ACCOUNTS:
 	set(value):
 		rate_limit = value if value in RateLimits.values() else RateLimits.FOR_REGULAR_ACCOUNTS
 
-## If the client is currently allowed to send more chat messages or not.
-var is_within_rate_limit: bool:
-	get:
-		return $RateLimit.is_within_limit(rate_limit)
-
 
 func _on_message_handler_message_parsed(command: String, params: String, trailing: String, username: String, tags: Dictionary) -> void:
 	match command:
@@ -171,6 +166,11 @@ func close_connection() -> void:
 ## Returns true if the WebSocket connection is open.
 func is_connection_open() -> bool:
 	return $WebSocket.get_ready_state() == WebSocketPeer.STATE_OPEN
+
+
+## Tells if the client is currently allowed to send more chat messages or not.
+func is_within_rate_limit() -> bool:
+	return $RateLimit.is_within_limit(rate_limit)
 
 
 ## Joins a given Twitch channel. The channel name must be preceeded by a pound
