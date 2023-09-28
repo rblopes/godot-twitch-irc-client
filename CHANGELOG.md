@@ -2,6 +2,8 @@
 
 ## HEAD
 
+## 2023-09-28 - v0.2.0
+
 - BREAKING CHANGE: Remove `enable_log` property
 - BREAKING CHANGE: Remove `is_within_rate_limit` property
 - Add `is_within_rate_limit()` method
