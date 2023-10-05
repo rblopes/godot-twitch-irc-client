@@ -27,10 +27,12 @@ found in this repository, inside the `demo` folder.
 extends Node
 
 func _ready() -> void:
+  randomize()
   # Assuming TwitchIRCClient is a child node of this scene.
   $TwitchIRCClient.authentication_succeeded.connect(_on_authentication_succeeded)
   $TwitchIRCClient.connection_opened.connect(_on_connection_opened)
   $TwitchIRCClient.message_received.connect(_on_message_received)
+  $TwitchIRCClient.logger.connect(_logger)
   $TwitchIRCClient.open_connection()
 
 func _on_connection_opened() -> void:
@@ -43,15 +45,22 @@ func _on_authentication_succeeded() -> void:
   # read. It must be prefixed by a `#` sign.
   $TwitchIRCClient.join("#<twitch channel>")
 
-func _on_message_received(username, message, tags) -> void:
-  var arguments = Array(message.split(" ", false))
-  match arguments.pop_front():
-    "!helloworld", "!test":
-      $TwitchIRCClient.send("Hello, World!")
-    "!greet":
-      $TwitchIRCClient.send("Welcome, %s!" % tags.get("display-name", username))
-    "!list":
-      $TwitchIRCClient.send(str("List: ", ", ".join(arguments)))
+# Optional: log and inspect received messages.
+func _logger(raw_messages: String, timestamp: String) -> void:
+  for message in raw_messages.strip_edges().split("\r\n", false):
+    prints(timestamp, message)
+
+func _on_message_received(username: String, message: String, tags: Dictionary) -> void:
+  # An example how chat "commands" could be handled.
+  match message.get_slice(" ", 0).to_lower():
+    "gl", "glgl", "glhf": # Tip: prefixes can be anything, or nothing at all!!
+      $TwitchIRCClient.send("Thanks!")
+    "!hi":
+      # Extract messages metadata
+      $TwitchIRCClient.send("%s VoHiYo" % tags["display-name"])
+    "!dice":
+      # Reply to previous messages
+      $TwitchIRCClient.send("You rolled a %d" % randi_range(1, 6), {"reply-parent-msg-id": tags["id"]})
 ```
 
 See the API documentation, browsing the "Search Help" function of the editor,
