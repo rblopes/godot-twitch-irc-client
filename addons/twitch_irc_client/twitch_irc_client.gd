@@ -41,12 +41,6 @@ signal message_received(username: String, message: String, tags: Dictionary)
 ## The server replied with a notice.
 signal notice_received(message: String, tags: Dictionary)
 
-## The server replied a ping from the client.
-signal ping()
-
-## The client replied a ping from the server.
-signal pong()
-
 ## The client exceeded the [member rate_limit] set and has been prevented from
 ## sending more chat messages to the channel.
 signal rate_limit_exceeded(last_message: String, tags: Dictionary)
@@ -104,9 +98,6 @@ func _on_message_handler_message_parsed(command: String, params: String, trailin
 			user_parted.emit(username)
 		"PING":
 			$MessageQueue.add($MessageFormatter.get_pong_message(params))
-			pong.emit()
-		"PONG":
-			ping.emit()
 		"PRIVMSG":
 			message_received.emit(username, trailing, tags)
 		"RECONNECT":

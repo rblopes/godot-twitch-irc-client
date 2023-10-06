@@ -2,6 +2,7 @@
 
 ## HEAD
 
+- BREAKING CHANGE: Remove `ping` and `pong` signals
 - Update message handler
 
 ## 2023-09-28 - v0.2.0
