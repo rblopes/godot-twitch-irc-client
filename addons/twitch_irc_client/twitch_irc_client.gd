@@ -55,10 +55,6 @@ signal user_joined(username: String)
 ## A user has left the channel.
 signal user_parted(username: String)
 
-## The server sent the list of users joined to the channel. Emitted after
-## joining a channel.
-signal username_list_received(usernames: Array[String])
-
 ## The possible [member rate_limit] values, defined as messages per 30 seconds.
 enum RateLimits {
 	FOR_REGULAR_ACCOUNTS = 20,            ## The client's account is not a channel's broadcaster or moderator
@@ -84,8 +80,6 @@ func _on_message_handler_message_parsed(command: String, params: String, trailin
 	match command:
 		"001":
 			authentication_succeeded.emit()
-		"353":
-			username_list_received.emit(trailing.split(" ", false))
 		"JOIN":
 			user_joined.emit(username)
 		"NOTICE":

@@ -69,4 +69,3 @@ size_flags_stretch_ratio = 0.25
 [connection signal="message_received" from="TwitchIRCClient" to="." method="_on_twitch_irc_client_message_received"]
 [connection signal="user_joined" from="TwitchIRCClient" to="." method="_on_twitch_irc_client_user_joined"]
 [connection signal="user_parted" from="TwitchIRCClient" to="." method="_on_twitch_irc_client_user_parted"]
-[connection signal="username_list_received" from="TwitchIRCClient" to="." method="_on_twitch_irc_client_username_list_received"]

@@ -55,8 +55,3 @@ func _on_twitch_irc_client_user_joined(username: String) -> void:
 func _on_twitch_irc_client_user_parted(username: String) -> void:
 	%Events.add_event("User left: %s." % username)
 	%Users.remove_user(username)
-
-
-func _on_twitch_irc_client_username_list_received(usernames: Array[String]) -> void:
-	for username in usernames:
-		%Users.add_user(username)
