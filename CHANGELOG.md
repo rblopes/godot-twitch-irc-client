@@ -2,6 +2,8 @@
 
 ## HEAD
 
+- Update message handler
+
 ## 2023-09-28 - v0.2.0
 
 - BREAKING CHANGE: Remove `enable_log` property

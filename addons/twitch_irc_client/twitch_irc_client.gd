@@ -71,9 +71,6 @@ enum RateLimits {
 	FOR_MODERATORS_OR_BROADCASTERS = 100, ## The client's account is the channel's broadcaster or moderator
 }
 
-## The notification Twitch sends after an unsuccessful login.
-const TWITCH_NOTICE_AUTH_FAILED := "Login authentication failed"
-
 ## Twitch WebSocket API Endpoint.
 const TWITCH_WS_API_URL := "wss://irc-ws.chat.twitch.tv:443"
 
@@ -98,7 +95,7 @@ func _on_message_handler_message_parsed(command: String, params: String, trailin
 		"JOIN":
 			user_joined.emit(username)
 		"NOTICE":
-			if trailing == TWITCH_NOTICE_AUTH_FAILED:
+			if $MessageHandler.is_auth_failed_notice(trailing):
 				authentication_failed.emit()
 				logger.emit("*** IRC API authentication failed. ***", Time.get_datetime_string_from_system())
 			else:
