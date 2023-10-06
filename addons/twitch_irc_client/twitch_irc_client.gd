@@ -57,8 +57,8 @@ signal user_parted(username: String)
 
 ## The possible [member rate_limit] values, defined as messages per 30 seconds.
 enum RateLimits {
-	FOR_REGULAR_ACCOUNTS = 20,            ## The client's account is not a channel's broadcaster or moderator
-	FOR_MODERATORS_OR_BROADCASTERS = 100, ## The client's account is the channel's broadcaster or moderator
+	FOR_REGULAR_ACCOUNTS = 20,            ## The client's account is not a broadcaster or moderator
+	FOR_MODERATORS_OR_BROADCASTERS = 100, ## The client's account is the channel broadcaster or moderator
 }
 
 ## Twitch WebSocket API Endpoint.
@@ -69,7 +69,7 @@ const TWITCH_WS_API_URL := "wss://irc-ws.chat.twitch.tv:443"
 @export_placeholder("#mychannel")
 var channel: String = ""
 
-## How many messages can be sent by the client within a period of 30 seconds.
+## How many messages can be sent by the client within an interval of 30 seconds.
 @export
 var rate_limit: RateLimits = RateLimits.FOR_REGULAR_ACCOUNTS:
 	set(value):
@@ -133,7 +133,7 @@ func _on_web_socket_message_received(message: String) -> void:
 
 ## Login using a Twitch account and its OAuth access token. Use both
 ## [signal authentication_failed] and [signal authentication_succeeded] signals
-## to confirm whether a login attempt succeeded or failed.
+## to confirm whether a login attempt failed or succeeded.
 func authenticate(nick: String, oauth_token: String) -> void:
 	$MessageQueue.add($MessageFormatter.get_cap_req_message())
 	$MessageQueue.add($MessageFormatter.get_pass_message(oauth_token))
@@ -155,9 +155,9 @@ func is_within_rate_limit() -> bool:
 	return $RateLimit.is_within_limit(rate_limit)
 
 
-## Joins a given Twitch channel. The channel name must be preceeded by a pound
-## sign, e.g. "[code]#gdq[/code]". If omitted, [code]p_channel[/code] defaults
-## to [member channel].
+## Joins a given Twitch [param p_channel]. The channel name must be preceeded by
+## a pound sign, e.g. "[code]#gdq[/code]". If omitted, [param p_channel]
+## defaults to [member channel].
 func join(p_channel: String = channel) -> void:
 	channel = p_channel
 	assert(len(channel) > 1 and channel.begins_with("#") and not "," in channel, "Invalid channel.")
@@ -181,8 +181,8 @@ func open_connection() -> void:
 		connection_refused.emit()
 
 
-## Sends [code]message[/code] in the chat with its respective [code]tags[/code],
-## if any, respecting the [member rate_limit]. Whenever that limit is exceeded,
+## Sends [param message] in the chat with its respective [param tags], if any,
+## respecting the [member rate_limit]. Whenever that limit is exceeded,
 ## [signal rate_limit_exceeded] is emitted and further messages are ignored.
 func send(message: String, tags: Dictionary = {}) -> void:
 	assert(len(channel) > 1 and channel.begins_with("#") and not "," in channel, "Invalid channel.")
