@@ -2,8 +2,10 @@
 
 ## HEAD
 
+- BREAKING CHANGE: Remove `connection_refused` signal
 - BREAKING CHANGE: Remove `ping` and `pong` signals
 - BREAKING CHANGE: Remove `username_list_received` signal
+- Change `open_connection` to return error value
 - Update message handler
 
 ## 2023-09-28 - v0.2.0

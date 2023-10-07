@@ -29,9 +29,6 @@ signal connection_closed()
 ## The client has successfully connected to the server.
 signal connection_opened()
 
-## The connection to the server has failed.
-signal connection_refused()
-
 ## Emitted for raw messages and events.
 signal logger(message: String, timestamp: String)
 
@@ -171,14 +168,15 @@ func leave() -> void:
 
 
 ## Establishes a connection to the Twitch IRC API.
-func open_connection() -> void:
+func open_connection() -> Error:
 	if $WebSocket.get_ready_state() != WebSocketPeer.STATE_CLOSED:
-		return
+		return ERR_ALREADY_IN_USE
 	$MessageQueue.clear()
 	$WebSocket.clear()
-	if $WebSocket.connect_to_url(TWITCH_WS_API_URL) != OK:
-		push_error("Could not connect to Twitch.")
-		connection_refused.emit()
+	var error: Error = $WebSocket.connect_to_url(TWITCH_WS_API_URL)
+	if error != OK:
+		push_error("Failed to open WebSocket connection.")
+	return error
 
 
 ## Sends [param message] in the chat with its respective [param tags], if any,
