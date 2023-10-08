@@ -2,9 +2,12 @@
 
 ## HEAD
 
+- BREAKING CHANGE: Remove `authentication_failed` signal
+- BREAKING CHANGE: Remove `authentication_succeeded` signal
 - BREAKING CHANGE: Remove `connection_refused` signal
 - BREAKING CHANGE: Remove `ping` and `pong` signals
 - BREAKING CHANGE: Remove `username_list_received` signal
+- Add `authentication_completed` signal
 - Change `open_connection` to return error value
 - Update message handler
 

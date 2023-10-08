@@ -16,7 +16,9 @@ func _ready() -> void:
 	$TwitchIRCClient.open_connection()
 
 
-func _on_twitch_irc_client_authentication_succeeded() -> void:
+func _on_twitch_irc_client_authentication_completed(was_successful: bool) -> void:
+	if not was_successful:
+		return
 	# Join the desired Twitch channel.
 	var channel = $Config.get_value("connection", "channel")
 	if channel is String:

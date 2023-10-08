@@ -12,11 +12,8 @@
 class_name TwitchIRCClient
 extends Node
 
-## Authentication with the given credentials has failed.
-signal authentication_failed()
-
-## Authentication has succeeded.
-signal authentication_succeeded()
+## The authentication with the given credentials has either succeeded or failed.
+signal authentication_completed(was_successful: bool)
 
 ## The client is being notified about a channel event (e.g.: follows, raids,
 ## subscriptions etc.)
@@ -76,12 +73,12 @@ var rate_limit: RateLimits = RateLimits.FOR_REGULAR_ACCOUNTS:
 func _on_message_handler_message_parsed(command: String, params: String, trailing: String, username: String, tags: Dictionary) -> void:
 	match command:
 		"001":
-			authentication_succeeded.emit()
+			authentication_completed.emit(true)
 		"JOIN":
 			user_joined.emit(username)
 		"NOTICE":
 			if $MessageHandler.is_auth_failed_notice(trailing):
-				authentication_failed.emit()
+				authentication_completed.emit(false)
 				logger.emit("*** IRC API authentication failed. ***", Time.get_datetime_string_from_system())
 			else:
 				notice_received.emit(trailing, tags)
@@ -128,9 +125,9 @@ func _on_web_socket_message_received(message: String) -> void:
 	logger.emit(message, Time.get_datetime_string_from_system())
 
 
-## Login using a Twitch account and its OAuth access token. Use both
-## [signal authentication_failed] and [signal authentication_succeeded] signals
-## to confirm whether a login attempt failed or succeeded.
+## Login using a Twitch account and its OAuth access token.
+## Use [signal authentication_completed] to check if an authentication attempt
+## failed or concluded successfully.
 func authenticate(nick: String, oauth_token: String) -> void:
 	$MessageQueue.add($MessageFormatter.get_cap_req_message())
 	$MessageQueue.add($MessageFormatter.get_pass_message(oauth_token))

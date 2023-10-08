@@ -63,7 +63,7 @@ layout_mode = 2
 size_flags_horizontal = 3
 size_flags_stretch_ratio = 0.25
 
-[connection signal="authentication_succeeded" from="TwitchIRCClient" to="." method="_on_twitch_irc_client_authentication_succeeded"]
+[connection signal="authentication_completed" from="TwitchIRCClient" to="." method="_on_twitch_irc_client_authentication_completed"]
 [connection signal="connection_opened" from="TwitchIRCClient" to="." method="_on_twitch_irc_client_connection_opened"]
 [connection signal="logger" from="TwitchIRCClient" to="." method="_on_twitch_irc_client_logger"]
 [connection signal="message_received" from="TwitchIRCClient" to="." method="_on_twitch_irc_client_message_received"]

@@ -29,7 +29,7 @@ extends Node
 func _ready() -> void:
   randomize()
   # Assuming TwitchIRCClient is a child node of this scene.
-  $TwitchIRCClient.authentication_succeeded.connect(_on_authentication_succeeded)
+  $TwitchIRCClient.authentication_completed.connect(_on_authentication_completed)
   $TwitchIRCClient.connection_opened.connect(_on_connection_opened)
   $TwitchIRCClient.message_received.connect(_on_message_received)
   $TwitchIRCClient.logger.connect(_logger)
@@ -40,10 +40,11 @@ func _on_connection_opened() -> void:
   # its generated token.
   $TwitchIRCClient.authenticate("<nick>", "<OAuth Token>")
 
-func _on_authentication_succeeded() -> void:
+func _on_authentication_completed(was_successful: bool) -> void:
   # Replace <twitch channel> with the channel name whose chat box you want to
   # read. It must be prefixed by a `#` sign.
-  $TwitchIRCClient.join("#<twitch channel>")
+  if was_successful:
+    $TwitchIRCClient.join("#<twitch channel>")
 
 # Optional: log and inspect received messages.
 func _logger(raw_messages: String, timestamp: String) -> void:
