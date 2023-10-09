@@ -12,8 +12,8 @@ func _ready() -> void:
 	# (`demo/config.cfg`) inside the project data folder (open it using the menu
 	# "Project > Open Project Data Folder"), and modify it following the
 	# instructions included.
-	assert(FileAccess.file_exists(config_file_path), "Demo app configuration file missing!")
-	assert(_config_file.load(config_file_path) == OK, "There was an error loading the app configuration.")
+	assert(FileAccess.file_exists(config_file_path), "Configuration file missing!")
+	assert(_config_file.load(config_file_path) == OK, "There was an error loading the configuration.")
 
 
 func get_value(section: String, key: String) -> Variant:

@@ -16,21 +16,25 @@ func _ready() -> void:
 	$TwitchIRCClient.open_connection()
 
 
+func _on_command_handler_command_completed(command: String, reply: String, user: UserDetails, tags: Dictionary) -> void:
+	$TwitchIRCClient.send(reply, tags)
+	%Events.add_event("Command %s requested by %s." % [command, user.get_display_name()])
+
+
 func _on_twitch_irc_client_authentication_completed(was_successful: bool) -> void:
-	if not was_successful:
-		return
-	# Join the desired Twitch channel.
-	var channel = $Config.get_value("connection", "channel")
-	if channel is String:
+	if was_successful:
+		# Join the desired Twitch channel.
+		var channel: String = $Config.get_value("connection", "channel")
 		$TwitchIRCClient.join(channel)
+	else:
+		$TwitchIRCClient.close_connection()
 
 
 func _on_twitch_irc_client_connection_opened() -> void:
 	# Login using your bot account and an OAuth token.
-	var nick = $Config.get_value("authentication", "nick")
-	var oauth_token = $Config.get_value("authentication", "oauth_token")
-	if nick is String and oauth_token is String:
-		$TwitchIRCClient.authenticate(nick, oauth_token)
+	var nick: String = $Config.get_value("authentication", "nick")
+	var oauth_token: String = $Config.get_value("authentication", "oauth_token")
+	$TwitchIRCClient.authenticate(nick, oauth_token)
 
 
 func _on_twitch_irc_client_logger(message: String, timestamp: String) -> void:
@@ -39,14 +43,7 @@ func _on_twitch_irc_client_logger(message: String, timestamp: String) -> void:
 
 
 func _on_twitch_irc_client_message_received(username: String, message: String, tags: Dictionary) -> void:
-	var arguments: Array[String] = []; arguments.assign(message.split(" ", false))
-	var command_name: String = arguments.pop_front()
-	var user_details := UserDetails.new(username, tags)
-	var response: Dictionary = $Commands.run(command_name, arguments, user_details)
-	if response.is_empty() or response.message.is_empty():
-		return
-	$TwitchIRCClient.send(response.message, response.get("tags", {}))
-	%Events.add_event("Command %s requested by %s." % [command_name, username])
+	$CommandHandler.run(UserDetails.new(username, tags), message)
 
 
 func _on_twitch_irc_client_user_joined(username: String) -> void:

@@ -32,9 +32,7 @@ func get_display_name() -> String:
 ## Gets the last received message ID. Useful to encode messages as direct
 ## replies.
 func get_reply_parent_message_id() -> Dictionary:
-	if "id" in tags:
-		return {"reply-parent-msg-id": tags.id}
-	return {}
+	return {"reply-parent-msg-id": tags.id}
 
 
 ## Calculates the current user's level, based on their subscription badges.
@@ -43,5 +41,10 @@ func get_user_level() -> int:
 	result |= UserLevelFlags.SUBSCRIBER * int(tags.get("subscriber") == "1")
 	result |= UserLevelFlags.VIP * int("vip" in tags)
 	result |= UserLevelFlags.MODERATOR * int(tags.get("mod") == "1")
-	result |= UserLevelFlags.BROADCASTER * int("broadcaster" in tags.get("badges", ""))
+	result |= UserLevelFlags.BROADCASTER * int(is_broadcaster())
 	return result
+
+
+## Tells if this user is the channel owner.
+func is_broadcaster() -> bool:
+	return "broadcaster" in tags.get("badges", "")

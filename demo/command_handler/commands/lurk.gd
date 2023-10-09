@@ -1,4 +1,4 @@
-extends "command.gd"
+extends "../command.gd"
 
 
 func run(arguments: Array[String], user_details: UserDetails) -> String:

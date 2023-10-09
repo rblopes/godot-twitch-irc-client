@@ -1,14 +1,15 @@
-[gd_scene load_steps=11 format=3 uid="uid://dg8wfohp6jdul"]
+[gd_scene load_steps=12 format=3 uid="uid://dg8wfohp6jdul"]
 
 [ext_resource type="PackedScene" uid="uid://b8gtr3wmit5g" path="res://addons/twitch_irc_client/twitch_irc_client.tscn" id="2_t861n"]
 [ext_resource type="PackedScene" uid="uid://cemx8uhkcb70t" path="res://demo/users/users.tscn" id="3"]
-[ext_resource type="Script" path="res://demo/commands/commands.gd" id="4"]
+[ext_resource type="Script" path="res://demo/command_handler/command_handler.gd" id="4_85sf6"]
 [ext_resource type="PackedScene" uid="uid://b4rjcn0bcncdr" path="res://demo/events/events.tscn" id="5"]
 [ext_resource type="Script" path="res://demo/demo.gd" id="6"]
-[ext_resource type="Script" path="res://demo/commands/test.gd" id="7"]
-[ext_resource type="Script" path="res://demo/commands/roll.gd" id="7_p1d3b"]
-[ext_resource type="Script" path="res://demo/commands/lurk.gd" id="8"]
-[ext_resource type="Script" path="res://demo/commands/list.gd" id="11"]
+[ext_resource type="Script" path="res://demo/command_handler/commands/8ball.gd" id="6_4u3do"]
+[ext_resource type="Script" path="res://demo/command_handler/commands/lurk.gd" id="7_r7pv5"]
+[ext_resource type="Script" path="res://demo/command_handler/commands/roll.gd" id="8_13fyg"]
+[ext_resource type="PackedScene" uid="uid://dd8nle4b6h8j3" path="res://demo/command_handler/command.tscn" id="9_fx03k"]
+[ext_resource type="Script" path="res://demo/command_handler/commands/test.gd" id="9_y2obc"]
 [ext_resource type="Script" path="res://demo/config.gd" id="12"]
 
 [node name="Demo" type="PanelContainer"]
@@ -25,28 +26,30 @@ rate_limit = 100
 [node name="Config" type="Node" parent="."]
 script = ExtResource("12")
 
-[node name="Commands" type="Node" parent="."]
-editor_description = "The chat bot command handler. Children nodes are commands, extending the \"commands/command.gd\" script."
-script = ExtResource("4")
+[node name="CommandHandler" type="Node" parent="."]
+editor_description = "The chat bot command handler. Children nodes are commands, extending the \"command.gd\" script."
+script = ExtResource("4_85sf6")
 
-[node name="!list" type="Node" parent="Commands"]
-script = ExtResource("11")
-
-[node name="!lurk" type="Node" parent="Commands"]
-script = ExtResource("8")
-
-[node name="!roll" type="Node" parent="Commands"]
-script = ExtResource("7_p1d3b")
-aliases = Array[String](["!dice", "!roll_die", "!roll_dice"])
+[node name="8ball" parent="CommandHandler" instance=ExtResource("9_fx03k")]
+script = ExtResource("6_4u3do")
+cooldown_interval = 10
 is_reply = true
 
-[node name="Cooldown" type="Timer" parent="Commands/!roll"]
-one_shot = true
+[node name="lurk" parent="CommandHandler" instance=ExtResource("9_fx03k")]
+script = ExtResource("7_r7pv5")
 
-[node name="!test" type="Node" parent="Commands"]
-script = ExtResource("7")
-aliases = Array[String](["!helloworld"])
-user_level = 8
+[node name="roll" parent="CommandHandler" instance=ExtResource("9_fx03k")]
+script = ExtResource("8_13fyg")
+min_faces = 6
+max_faces = 1000
+aliases = PackedStringArray("dice", "roll_die", "roll_dice")
+cooldown_interval = 10
+is_reply = true
+
+[node name="test" parent="CommandHandler" instance=ExtResource("9_fx03k")]
+script = ExtResource("9_y2obc")
+aliases = PackedStringArray("helloworld")
+required_user_level = 4
 
 [node name="Contents" type="HBoxContainer" parent="."]
 layout_mode = 2
@@ -69,3 +72,4 @@ size_flags_stretch_ratio = 0.25
 [connection signal="message_received" from="TwitchIRCClient" to="." method="_on_twitch_irc_client_message_received"]
 [connection signal="user_joined" from="TwitchIRCClient" to="." method="_on_twitch_irc_client_user_joined"]
 [connection signal="user_parted" from="TwitchIRCClient" to="." method="_on_twitch_irc_client_user_parted"]
+[connection signal="command_completed" from="CommandHandler" to="." method="_on_command_handler_command_completed"]
