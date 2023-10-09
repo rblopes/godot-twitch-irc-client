@@ -5,7 +5,8 @@ signal message_parsed(command: String, params: String, trailing: String, usernam
 # The notification received after an unsuccessful authentication.
 const AUTH_FAILED_NOTICE := "Login authentication failed"
 
-const IRC_MESSAGE_REGEX := "(?mn)^(?<tags>@\\H+ )?(:((?<username>\\w+)(!\\w+@\\w+)?\\.)?tmi\\.twitch\\.tv )?(?<command>\\d{3}|[A-Z]+)( (?<params>.+?))?( :(?<trailing>.*))?$"
+const CRLF := "\r\n"
+const IRC_MESSAGE_REGEX := "(?n)^(?<tags>@\\H+ )?(:((?<username>\\w+)(!\\w+@\\w+)?\\.)?tmi\\.twitch\\.tv )?(?<command>\\d{3}|[A-Z]+)( (?<params>.+?))?( :(?<trailing>.*))?$"
 const IRC_TAGS_REGEX := "(?<=^@|;)(?<key>\\H+?)(?:=(?<value>\\H*?))?(?=;|$)"
 
 var _irc_message_regex := RegEx.create_from_string(IRC_MESSAGE_REGEX)
@@ -29,13 +30,15 @@ func _on_web_socket_message_received(message: Variant) -> void:
 
 
 func _parse_lines(lines: String) -> void:
-	for m in _irc_message_regex.search_all(lines):
-		var tags := _get_tags(m.get_string("tags"))
-		var username := m.get_string("username")
-		var command := m.get_string("command")
-		var params := m.get_string("params")
-		var trailing := m.get_string("trailing").strip_escapes()
-		message_parsed.emit(command, params, trailing, username, tags)
+	for line in lines.split(CRLF, false):
+		var m := _irc_message_regex.search(line)
+		if is_instance_valid(m):
+			var tags := _get_tags(m.get_string("tags"))
+			var username := m.get_string("username")
+			var command := m.get_string("command")
+			var params := m.get_string("params")
+			var trailing := m.get_string("trailing")
+			message_parsed.emit(command, params, trailing, username, tags)
 
 
 func _unescape_tag_value(raw_value: String) -> String:
