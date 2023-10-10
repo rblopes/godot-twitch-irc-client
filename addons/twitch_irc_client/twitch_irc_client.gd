@@ -26,6 +26,9 @@ signal connection_closed()
 ## The client has successfully connected to the server.
 signal connection_opened()
 
+## The client has joined the specified [member channel].
+signal joined()
+
 ## Emitted for raw messages and events.
 signal logger(message: String, timestamp: String)
 
@@ -34,6 +37,9 @@ signal message_received(username: String, message: String, tags: Dictionary)
 
 ## The server replied with a notice.
 signal notice_received(message: String, tags: Dictionary)
+
+## The client has parted from [member channel].
+signal parted()
 
 ## The client exceeded the [member rate_limit] set and has been prevented from
 ## sending more chat messages to the channel.
@@ -69,7 +75,7 @@ func _on_message_handler_message_parsed(command: String, params: String, trailin
 		"001":
 			authentication_completed.emit(true)
 		"JOIN":
-			pass
+			joined.emit()
 		"NOTICE":
 			if $MessageHandler.is_auth_failed_notice(trailing):
 				authentication_completed.emit(false)
@@ -77,7 +83,7 @@ func _on_message_handler_message_parsed(command: String, params: String, trailin
 			else:
 				notice_received.emit(trailing, tags)
 		"PART":
-			pass
+			parted.emit()
 		"PING":
 			$MessageQueue.add($MessageFormatter.get_pong_message(params))
 		"PRIVMSG":

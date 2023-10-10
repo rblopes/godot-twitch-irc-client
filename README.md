@@ -31,6 +31,7 @@ func _ready() -> void:
   # Assuming TwitchIRCClient is a child node of this scene.
   $TwitchIRCClient.authentication_completed.connect(_on_authentication_completed)
   $TwitchIRCClient.connection_opened.connect(_on_connection_opened)
+  $TwitchIRCClient.joined.connect(_on_joined)
   $TwitchIRCClient.message_received.connect(_on_message_received)
   $TwitchIRCClient.logger.connect(_logger)
   $TwitchIRCClient.open_connection()
@@ -45,6 +46,9 @@ func _on_authentication_completed(was_successful: bool) -> void:
   # read. It must be prefixed by a `#` sign.
   if was_successful:
     $TwitchIRCClient.join("#<twitch channel>")
+
+func _on_joined() -> void:
+  $TwitchIRCClient.send("Bot is ready.")
 
 # Optional: log and inspect received messages.
 func _logger(raw_messages: String, timestamp: String) -> void:

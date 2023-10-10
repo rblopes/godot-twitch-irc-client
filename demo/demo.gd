@@ -38,6 +38,10 @@ func _on_twitch_irc_client_connection_opened() -> void:
 	$TwitchIRCClient.authenticate(nick, oauth_token)
 
 
+func _on_twitch_irc_client_joined() -> void:
+	%Events.add_event("Bot is ready.")
+
+
 func _on_twitch_irc_client_logger(message: String, timestamp: String) -> void:
 	for s in message.strip_edges().split("\r\n"):
 		prints(timestamp, s)

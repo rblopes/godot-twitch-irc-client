@@ -10,6 +10,8 @@
 - BREAKING CHANGE: Remove `user_joined` signal
 - BREAKING CHANGE: Remove `user_parted` signal
 - Add `authentication_completed` signal
+- Add `joined` signal
+- Add `parted` signal
 - Change `open_connection` to return error value
 - Remove support for membership capabilities
 - Update message handler
