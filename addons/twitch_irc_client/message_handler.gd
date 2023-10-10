@@ -7,7 +7,7 @@ const AUTH_FAILED_NOTICE := "Login authentication failed"
 
 const CRLF := "\r\n"
 const IRC_MESSAGE_REGEX := "(?n)^(?<tags>@\\H+ )?(:((?<username>\\w+)(!\\w+@\\w+)?\\.)?tmi\\.twitch\\.tv )?(?<command>\\d{3}|[A-Z]+)( (?<params>.+?))?( :(?<trailing>.*))?$"
-const IRC_TAGS_REGEX := "(?<=^@|;)(?<key>\\H+?)(?:=(?<value>\\H*?))?(?=;|$)"
+const IRC_TAGS_REGEX := "(?<=^@|;)(?<key>\\H+?)(?:=(?<value>\\H*?))?(?=;| $)"
 
 var _irc_message_regex := RegEx.create_from_string(IRC_MESSAGE_REGEX)
 var _irc_tags_regex := RegEx.create_from_string(IRC_TAGS_REGEX)
