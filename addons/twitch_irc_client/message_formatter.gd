@@ -10,7 +10,7 @@ const IRC_COMMAND_PONG_MASK := "PONG %s"
 const IRC_COMMAND_PRIVMSG_MASK := "PRIVMSG %s :%s"
 
 # Twitch IRC capabilities requested by the client.
-const TWITCH_IRC_CAPABILITIES := "twitch.tv/commands twitch.tv/membership twitch.tv/tags"
+const TWITCH_IRC_CAPABILITIES := "twitch.tv/commands twitch.tv/tags"
 
 # A PING message that must be sent regularly.
 # Required to prevent connectivity loss.

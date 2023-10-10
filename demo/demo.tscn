@@ -70,6 +70,4 @@ size_flags_stretch_ratio = 0.25
 [connection signal="connection_opened" from="TwitchIRCClient" to="." method="_on_twitch_irc_client_connection_opened"]
 [connection signal="logger" from="TwitchIRCClient" to="." method="_on_twitch_irc_client_logger"]
 [connection signal="message_received" from="TwitchIRCClient" to="." method="_on_twitch_irc_client_message_received"]
-[connection signal="user_joined" from="TwitchIRCClient" to="." method="_on_twitch_irc_client_user_joined"]
-[connection signal="user_parted" from="TwitchIRCClient" to="." method="_on_twitch_irc_client_user_parted"]
 [connection signal="command_completed" from="CommandHandler" to="." method="_on_command_handler_command_completed"]

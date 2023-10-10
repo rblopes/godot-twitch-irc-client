@@ -7,8 +7,11 @@
 - BREAKING CHANGE: Remove `connection_refused` signal
 - BREAKING CHANGE: Remove `ping` and `pong` signals
 - BREAKING CHANGE: Remove `username_list_received` signal
+- BREAKING CHANGE: Remove `user_joined` signal
+- BREAKING CHANGE: Remove `user_parted` signal
 - Add `authentication_completed` signal
 - Change `open_connection` to return error value
+- Remove support for membership capabilities
 - Update message handler
 
 ## 2023-09-28 - v0.2.0

@@ -19,6 +19,7 @@ func _ready() -> void:
 func _on_command_handler_command_completed(command: String, reply: String, user: UserDetails, tags: Dictionary) -> void:
 	$TwitchIRCClient.send(reply, tags)
 	%Events.add_event("Command %s requested by %s." % [command, user.get_display_name()])
+	%Users.add_user(user.username)
 
 
 func _on_twitch_irc_client_authentication_completed(was_successful: bool) -> void:
@@ -44,13 +45,3 @@ func _on_twitch_irc_client_logger(message: String, timestamp: String) -> void:
 
 func _on_twitch_irc_client_message_received(username: String, message: String, tags: Dictionary) -> void:
 	$CommandHandler.run(UserDetails.new(username, tags), message)
-
-
-func _on_twitch_irc_client_user_joined(username: String) -> void:
-	%Events.add_event("User joined: %s." % username)
-	%Users.add_user(username)
-
-
-func _on_twitch_irc_client_user_parted(username: String) -> void:
-	%Events.add_event("User left: %s." % username)
-	%Users.remove_user(username)

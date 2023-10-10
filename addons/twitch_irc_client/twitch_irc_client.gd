@@ -43,12 +43,6 @@ signal rate_limit_exceeded(last_message: String, tags: Dictionary)
 ## receive or send messages until connection is restored.
 signal reconnect_requested()
 
-## A user has joined the channel.
-signal user_joined(username: String)
-
-## A user has left the channel.
-signal user_parted(username: String)
-
 ## The possible [member rate_limit] values, defined as messages per 30 seconds.
 enum RateLimits {
 	FOR_REGULAR_ACCOUNTS = 20,            ## The client's account is not a broadcaster or moderator
@@ -75,7 +69,7 @@ func _on_message_handler_message_parsed(command: String, params: String, trailin
 		"001":
 			authentication_completed.emit(true)
 		"JOIN":
-			user_joined.emit(username)
+			pass
 		"NOTICE":
 			if $MessageHandler.is_auth_failed_notice(trailing):
 				authentication_completed.emit(false)
@@ -83,7 +77,7 @@ func _on_message_handler_message_parsed(command: String, params: String, trailin
 			else:
 				notice_received.emit(trailing, tags)
 		"PART":
-			user_parted.emit(username)
+			pass
 		"PING":
 			$MessageQueue.add($MessageFormatter.get_pong_message(params))
 		"PRIVMSG":
