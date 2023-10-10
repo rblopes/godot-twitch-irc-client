@@ -2,6 +2,8 @@
 
 ## HEAD
 
+## 2023-10-10 - v0.3.0
+
 - BREAKING CHANGE: Remove `authentication_failed` signal
 - BREAKING CHANGE: Remove `authentication_succeeded` signal
 - BREAKING CHANGE: Remove `connection_refused` signal
