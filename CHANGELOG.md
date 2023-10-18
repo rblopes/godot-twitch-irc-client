@@ -2,6 +2,8 @@
 
 ## HEAD
 
+- BREAKING CHANGE: Change order of `message_received` signal parameters
+
 ## 2023-10-10 - v0.3.0
 
 - BREAKING CHANGE: Remove `authentication_failed` signal

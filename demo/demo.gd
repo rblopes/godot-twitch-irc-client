@@ -47,5 +47,5 @@ func _on_twitch_irc_client_logger(message: String, timestamp: String) -> void:
 		prints(timestamp, s)
 
 
-func _on_twitch_irc_client_message_received(username: String, message: String, tags: Dictionary) -> void:
+func _on_twitch_irc_client_message_received(message: String, username: String, tags: Dictionary) -> void:
 	$CommandHandler.run(UserDetails.new(username, tags), message)

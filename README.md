@@ -55,7 +55,7 @@ func _logger(raw_messages: String, timestamp: String) -> void:
   for message in raw_messages.strip_edges().split("\r\n", false):
     prints(timestamp, message)
 
-func _on_message_received(username: String, message: String, tags: Dictionary) -> void:
+func _on_message_received(message: String, username: String, tags: Dictionary) -> void:
   # An example how chat "commands" could be handled.
   match message.get_slice(" ", 0).to_lower():
     "gl", "glgl", "glhf": # Tip: prefixes can be anything, or nothing at all!!

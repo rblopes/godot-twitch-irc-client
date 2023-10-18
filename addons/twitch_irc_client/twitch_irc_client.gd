@@ -33,7 +33,7 @@ signal joined()
 signal logger(message: String, timestamp: String)
 
 ## The client has received a message from the channel.
-signal message_received(username: String, message: String, tags: Dictionary)
+signal message_received(message: String, username: String, tags: Dictionary)
 
 ## The server replied with a notice.
 signal notice_received(message: String, tags: Dictionary)
@@ -87,7 +87,7 @@ func _on_message_handler_message_parsed(command: String, params: String, trailin
 		"PING":
 			$MessageQueue.add($MessageFormatter.get_pong_message(params))
 		"PRIVMSG":
-			message_received.emit(username, trailing, tags)
+			message_received.emit(trailing, username, tags)
 		"RECONNECT":
 			reconnect_requested.emit()
 		"USERNOTICE":
