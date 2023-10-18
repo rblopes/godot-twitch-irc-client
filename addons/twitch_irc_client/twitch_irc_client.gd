@@ -41,10 +41,6 @@ signal notice_received(message: String, tags: Dictionary)
 ## The client has parted from [member channel].
 signal parted()
 
-## The client exceeded the [member rate_limit] set and has been prevented from
-## sending more chat messages to the channel.
-signal rate_limit_exceeded(last_message: String, tags: Dictionary)
-
 ## The server has requested the client to reconnect: it might not be possible to
 ## receive or send messages until connection is restored.
 signal reconnect_requested()
@@ -176,13 +172,14 @@ func open_connection() -> Error:
 	return error
 
 
-## Sends [param message] in the chat with its respective [param tags], if any,
-## respecting the [member rate_limit]. Whenever that limit is exceeded,
-## [signal rate_limit_exceeded] is emitted and further messages are ignored.
-func send(message: String, tags: Dictionary = {}) -> void:
+## Sends [param message] to [member channel] with its respective [param tags],
+## if any, respecting the [member rate_limit]. If that limit is exceeded, the
+## message is silently dropped to prevent suspension. Returns [code]true[/code]
+## if the message was queued for delivery.
+func send(message: String, tags: Dictionary = {}) -> bool:
 	assert(len(channel) > 1 and channel.begins_with("#") and not "," in channel, "Invalid channel.")
-	if $RateLimit.is_within_limit(rate_limit):
+	var result: bool = $RateLimit.is_within_limit(rate_limit)
+	if result:
 		$RateLimit.count()
 		$MessageQueue.add($MessageFormatter.get_privmsg_message(channel, message, tags))
-	else:
-		rate_limit_exceeded.emit(message, tags)
+	return result

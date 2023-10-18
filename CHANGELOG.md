@@ -3,6 +3,8 @@
 ## HEAD
 
 - BREAKING CHANGE: Change order of `message_received` signal parameters
+- BREAKING CHANGE: Remove `rate_limit_exceeded` signal
+- Change `send` to return a boolean value
 
 ## 2023-10-10 - v0.3.0
 
