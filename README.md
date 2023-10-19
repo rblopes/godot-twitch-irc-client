@@ -6,9 +6,24 @@ An abstraction layer for the Twitch IRC API, over a WebSocket connection, that
 makes it possible for games and applications created with Godot Engine to
 interact with Twitch channels.
 
-> NOTE: This a pure GDScript implementation. If you're developing Twitch
-> chat integrations with Godot Engine and C#, consider using
-> [TwitchLib](https://github.com/TwitchLib) instead.
+> **NOTE**: This is a pure GDScript implementation. If you're developing Twitch
+> chat integrations with Godot Engine and C#, try [TwitchLib].
+>
+> [TwitchLib]: https://github.com/TwitchLib
+
+
+## How to get it
+
+- **Through the editor**: Open your project and browse the [AssetLib] for
+  TwitchIRCClient, download and install it.
+
+- **Manually**: Download the latest release from this repository and copy the
+  `addons/twitch_irc_client` directory into your `res://addons` directory.
+
+You don't need to activate the plugin in your project to start using it:
+TwitchIRCClient is just a node!
+
+[AssetLib]: https://docs.godotengine.org/en/stable/community/asset_library/using_assetlib.html#in-the-editor
 
 
 ## Example
