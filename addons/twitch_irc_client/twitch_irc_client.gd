@@ -45,8 +45,9 @@ signal parted()
 ## receive or send messages until connection is restored.
 signal reconnect_requested()
 
-## The possible [member rate_limit] values, defined as messages per 30 seconds.
-enum RateLimits {
+## The possible rate limits, defined as messages sent per 30 seconds.
+enum RateLimit {
+	UNDEFINED = 0,                        ## No rate limit defined
 	FOR_REGULAR_ACCOUNTS = 20,            ## The client's account is not a broadcaster or moderator
 	FOR_MODERATORS_OR_BROADCASTERS = 100, ## The client's account is the channel broadcaster or moderator
 }
@@ -59,18 +60,13 @@ const TWITCH_WS_API_URL := "wss://irc-ws.chat.twitch.tv:443"
 @export_placeholder("#mychannel")
 var channel: String = ""
 
-## How many messages can be sent by the client within an interval of 30 seconds.
-@export
-var rate_limit: RateLimits = RateLimits.FOR_REGULAR_ACCOUNTS:
-	set(value):
-		rate_limit = value if value in RateLimits.values() else RateLimits.FOR_REGULAR_ACCOUNTS
-
 
 func _on_message_handler_message_parsed(command: String, params: String, trailing: String, username: String, tags: Dictionary) -> void:
 	match command:
 		"001":
 			authentication_completed.emit(true)
 		"JOIN":
+			$ChannelState.register(params)
 			joined.emit()
 		"NOTICE":
 			if $MessageHandler.is_auth_failed_notice(trailing):
@@ -79,6 +75,7 @@ func _on_message_handler_message_parsed(command: String, params: String, trailin
 			else:
 				notice_received.emit(trailing, tags)
 		"PART":
+			$ChannelState.clear()
 			parted.emit()
 		"PING":
 			$MessageQueue.add($MessageFormatter.get_pong_message(params))
@@ -88,6 +85,8 @@ func _on_message_handler_message_parsed(command: String, params: String, trailin
 			reconnect_requested.emit()
 		"USERNOTICE":
 			channel_event_received.emit(trailing, tags)
+		"USERSTATE":
+			$ChannelState.set_user_state(params, tags)
 
 
 func _on_message_queue_dispatch_requested(message: String) -> void:
@@ -135,6 +134,16 @@ func close_connection() -> void:
 	$WebSocket.close()
 
 
+## How many messages can be sent by the client within an interval of 30 seconds.
+func get_rate_limit() -> RateLimit:
+	return $ChannelState.get_rate_limit(channel)
+
+
+## Returns whether the client has joined [member channel] or not.
+func has_joined(p_channel: String = channel) -> bool:
+	return $ChannelState.has_joined(p_channel)
+
+
 ## Returns true if the WebSocket connection is open.
 func is_connection_open() -> bool:
 	return $WebSocket.get_ready_state() == WebSocketPeer.STATE_OPEN
@@ -142,7 +151,7 @@ func is_connection_open() -> bool:
 
 ## Tells if the client is currently allowed to send more chat messages or not.
 func is_within_rate_limit() -> bool:
-	return $RateLimit.is_within_limit(rate_limit)
+	return $RateLimit.is_within_limit($ChannelState.get_rate_limit(channel))
 
 
 ## Joins a given Twitch [param p_channel]. The channel name must be preceeded by
@@ -151,13 +160,15 @@ func is_within_rate_limit() -> bool:
 func join(p_channel: String = channel) -> void:
 	channel = p_channel
 	assert(len(channel) > 1 and channel.begins_with("#") and not "," in channel, "Invalid channel.")
-	$MessageQueue.add($MessageFormatter.get_join_message(channel))
+	if not $ChannelState.has_joined(channel):
+		$MessageQueue.add($MessageFormatter.get_join_message(channel))
 
 
 ## Parts from the previoulsy joined Twitch [member channel].
 func leave() -> void:
 	assert(len(channel) > 1 and channel.begins_with("#") and not "," in channel, "Invalid channel.")
-	$MessageQueue.add($MessageFormatter.get_part_message(channel))
+	if $ChannelState.has_joined(channel):
+		$MessageQueue.add($MessageFormatter.get_part_message(channel))
 
 
 ## Establishes a connection to the Twitch IRC API.
@@ -172,13 +183,14 @@ func open_connection() -> Error:
 	return error
 
 
-## Sends [param message] to [member channel] with its respective [param tags],
-## if any, respecting the [member rate_limit]. If that limit is exceeded, the
-## message is silently dropped to prevent suspension. Returns [code]true[/code]
-## if the message was queued for delivery.
+## Sends a [param message] to the [member channel] with its respective [param
+## tags], if any, respecting the rate limit. If that limit is exceeded, the
+## message is silently dropped to prevent a suspension.
+## Returns [code]true[/code] if the message was queued for delivery.
 func send(message: String, tags: Dictionary = {}) -> bool:
 	assert(len(channel) > 1 and channel.begins_with("#") and not "," in channel, "Invalid channel.")
-	var result: bool = $RateLimit.is_within_limit(rate_limit)
+	var rate_limit: int = $ChannelState.get_rate_limit(channel)
+	var result: bool = $ChannelState.has_joined(channel) and $RateLimit.is_within_limit(rate_limit)
 	if result:
 		$RateLimit.count()
 		$MessageQueue.add($MessageFormatter.get_privmsg_message(channel, message, tags))

@@ -4,6 +4,10 @@
 
 - BREAKING CHANGE: Change order of `message_received` signal parameters
 - BREAKING CHANGE: Remove `rate_limit_exceeded` signal
+- BREAKING CHANGE: Remove `rate_limit` property
+- BREAKING CHANGE: Rename `RateLimits` enum to `RateLimit`
+- Add `get_rate_limit` method
+- Add `has_joined` method
 - Change `send` to return a boolean value
 
 ## 2023-10-10 - v0.3.0

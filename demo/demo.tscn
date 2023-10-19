@@ -21,7 +21,6 @@ grow_vertical = 2
 script = ExtResource("6")
 
 [node name="TwitchIRCClient" parent="." instance=ExtResource("2_t861n")]
-rate_limit = 100
 
 [node name="Config" type="Node" parent="."]
 script = ExtResource("12")
